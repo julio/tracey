@@ -18,3 +18,10 @@ Log method calls for tracing
 
 * Tilmann Bruckhaus ( https://github.com/bruckhaus )
 * Julio Santos ( https://github.com/julio )
+
+## TO-DO
+
+1. Trace class methods
+1. Have a parent ID, so we can have a real tree
+1. Have a leaf ID
+1. IDs that cross processes and systems
