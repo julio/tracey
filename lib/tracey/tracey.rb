@@ -1,0 +1,39 @@
+module Tracey
+  class Base
+    def self.timestamp
+      Time.now.strftime("%Y-%m-%d %H:%M:%S.%L")
+    end
+
+    def self.tracer_uuid
+      SecureRandom.base64(8).gsub("/","_").gsub(/=+$/,"")
+    end
+
+    def self.tracer_id
+      Thread.current[:tree_id] ||= tracer_uuid
+    end
+
+    def self.trace(*classes_to_trace)
+      classes_to_trace = [classes_to_trace].flatten
+
+      classes_to_trace.each do |class_to_trace|
+        methods_to_trace = class_to_trace.instance_methods(false).reject do |m| 
+          m =~ /newrelic/
+        end
+
+        methods_to_trace.each do |m|
+          class_to_trace.class_eval(<<-DEF, __FILE__, __LINE__ + 1
+            alias :"old_#{m}" :"#{m}"
+
+            def #{m}(*args)
+              Rails.logger.info "[#{timestamp}][Tracey][IN][#{class_to_trace}##{m}][TREE ID:#{tracer_id}]"
+              send("old_#{m}", *args)
+            ensure
+              Rails.logger.info "[#{timestamp}][Tracey][OUT][#{class_to_trace}##{m}][TREE ID:#{tracer_id}]"
+            end
+          DEF
+          )
+        end
+      end
+    end
+  end
+end
