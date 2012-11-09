@@ -1,6 +1,6 @@
 # Tracey
 
-Log method calls for tracing
+Log method calls for tracing.
 
 ## Installation
 
