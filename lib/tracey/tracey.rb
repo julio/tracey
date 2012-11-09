@@ -25,10 +25,10 @@ module Tracey
             alias :"old_#{m}" :"#{m}"
 
             def #{m}(*args)
-              Rails.logger.info "[#{timestamp}][Tracey][IN][#{class_to_trace}##{m}][TREE ID:#{tracer_id}]"
+              Rails.logger.info "[#{timestamp}][Tracey][TREE ID:#{tracer_id}][IN][#{class_to_trace}##{m}]"
               send("old_#{m}", *args)
             ensure
-              Rails.logger.info "[#{timestamp}][Tracey][OUT][#{class_to_trace}##{m}][TREE ID:#{tracer_id}]"
+              Rails.logger.info "[#{timestamp}][Tracey][TREE ID:#{tracer_id}][OUT][#{class_to_trace}##{m}]"
             end
           DEF
           )
